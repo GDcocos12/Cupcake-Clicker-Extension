@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Cupcake Clicker EXTENSION",
+  "version": "1.0",
+  "description": "Cupcake Clicker, but as extension",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/Cupcake.png",
+      "48": "images/Cupcake.png",
+      "128": "images/Cupcake.png"
+    }
+  },
+  "icons": {
+    "16": "images/Cupcake.png",
+    "48": "images/Cupcake.png",
+    "128": "images/Cupcake.png"
+  }
+}

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="popup.css">
+	<title>Cupcake Clicker EXTENSION</title>
+</head>
+<body>
+	<div class="container">
+		<div id="changelog-button">🗎</div>
+		<div id="achievements-button">🎖</div>
+		<div id="settings-button">≣</div><br><br>
+		<h1 id="cupcakeCount">0</h1>
+		<p id="cps" style="visibility: hidden;">cupcakes per second: 0</p>
+		<img id="cupcake" src="images/Cupcake.png" alt="Cupcake">
+		<div class="menu">
+			<button id="upgradeClick">Upgrade Click Power (+1 per click)</button>
+			<button id="saveGame">Save</button>
+			<button id="resetGame">Reset</button>
+		</div>
+	</div>
+	<div id="version">v1.1</div>
+
+	<div id="overlay"></div>
+
+	<div id="settings-panel">
+		<div id="settings-close">X</div>
+
+		<h2>Settings</h2>
+
+		<div class="settings-section">
+			<hr class="settings-divider">
+			<h3>Background Settings</h3>
+			<input type="file" id="background-input" accept="image/*"><br>
+			<button id="remove-background">Remove BG</button><br>
+			<label for="repeat-x">Repeat X:</label>
+			<input type="checkbox" id="repeat-x"><br>
+			<label for="repeat-y">Repeat Y:</label>
+			<input type="checkbox" id="repeat-y"><br>
+			<label for="bg-cover">BG Cover:</label>
+            <input type="checkbox" id="bg-cover"><br>
+		</div>
+
+		<div class="settings-section">
+			<hr class="settings-divider">
+            <h3>Text</h3>
+            <button id="toggle-text-color">Change Text Color (Black/White)</button>
+		</div>
+
+		<hr class="settings-divider">
+
+		<p class="credits">Game made by GDCocos12</p>
+	</div>
+
+	<div id="changelog-panel">
+		<div id="changelog-close">X</div>
+
+		<h2>Updates</h2>
+
+		<div class="changelog-section">
+			<hr class="settings-divider">
+			<h3>v1.1</h3>
+			<ul>
+				<li>Added settings window.</li>
+				<li>Added BG change.</li>
+				<li>Added autosave every 60 seconds.</li>
+			</ul>
+		</div>
+
+		<div class="changelog-section">
+			<hr class="settings-divider">
+			<h3>v1.0</h3>
+			<ul>
+				<li>First Version!</li>
+				<li>Added uhh... EVERYTHING.</li>
+			</ul>
+		</div>
+
+		<hr class="settings-divider">
+
+		<p class="credits">Game made by GDCocos12</p>
+	</div>
+
+	<div id="achievements-panel">
+        <div id="achievements-close">X</div>
+        <h2>Achievements</h2>
+        <hr class="settings-divider">
+        <div id="achievements-container"></div>
+        <hr class="settings-divider">
+        <p class="credits">Game made by GDCocos12</p>
+    </div>
+
+	<script type="text/javascript" src="popup.js"></script>
+</body>
+</html>
