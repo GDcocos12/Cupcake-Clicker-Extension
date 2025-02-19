@@ -1,6 +1,6 @@
 function l(what) { return document.getElementById(what); }
 
-const version = "v1.1";
+const version = "v1.2";
 let cupcakeCount = 0;
 let clickValue = 1;
 let cps = 0;
@@ -17,6 +17,10 @@ let invertedText = false;
 
 //achievements
 let achievements = {};
+
+//stats
+let totalCupcakes = 0;
+let totalClicks = 0;
 
 //main elements
 const cupcakeImg = l('cupcake');
@@ -54,6 +58,13 @@ const achievementsContainer = l('achievements-container');
 const achievementsCloseButton = l('achievements-close');
 const achievementsPanel = l('achievements-panel');
 const achievementsButton = l('achievements-button');
+const normalAchievementsContainer = document.getElementById('normal-achievements');
+const hardAchievementsContainer = document.getElementById('hard-achievements');
+const shadowAchievementsContainer = document.getElementById('shadow-achievements');
+
+//stats
+const totalCupcakesDisplay = l('total-cupcakes');
+const totalClicksDisplay = l('total-clicks');
 
 
 if (!l('notification-container')) {
@@ -66,35 +77,90 @@ const achievementDefinitions = {
         name: "Wake and bake",
         description: "Click for the first time.",
         quote: "And it all begins...",
-        iconPosition: { x: 0, y: 5 }
+        iconPosition: { x: 0, y: 5 },
+        type: "normal"
     },
     "hundredClicks": {
         name: "Making some dough",
         description: "Click on cupcake for 100 times.",
         quote: "Click click click",
-        iconPosition: { x: 2, y: 5 }
+        iconPosition: { x: 2, y: 5 },
+        type: "normal"
     },
     "upgradeClick": {
         name: "Bigger and Better",
         description: "Upgrade Click for the first time.",
         quote: "I need more power.",
-        iconPosition: { x: 12, y: 0 }
+        iconPosition: { x: 12, y: 0 },
+        type: "normal"
+    },
+    "LotsOfCupcakes": {
+    	name: "Lots Of Cupcakes",
+        description: "Bake 50.000 cupcakes for all time.",
+        quote: "Eh, my grandma can bake more.",
+        iconPosition: { x: 3, y: 5 },
+        type: "normal"
+    },
+    "ReallyLotsOfCupcakes": {
+    	name: "Really Lots Of Cupcakes",
+        description: "Bake 500.000 cupcakes for all time.",
+        quote: "...",
+        iconPosition: { x: 4, y: 5 },
+        type: "normal"
+    },
+    "Millionaire": {
+    	name: "Millionaire",
+        description: "Bake 1.000.000 cupcakes for all time.",
+        quote: "Millionaire... at least in a game. That counts, right?",
+        iconPosition: { x: 5, y: 5 },
+        type: "normal"
+    },
+    "ClickAddict": {
+    	name: "Click Addict",
+        description: "Click on cupcake 10.000 times.",
+        quote: "...",
+        iconPosition: { x: 5, y: 7 },
+        type: "normal"
+    },
+    "Clickolympics": {
+    	name: "Clickolympics",
+        description: "Click on cupcake 20.000 times.",
+        quote: "Didn't break your mouse yet?",
+        iconPosition: { x: 6, y: 7 },
+        type: "normal"
+    },
+    "TheApotheosisOfMadness": {
+    	name: "The Apotheosis Of Madness",
+        description: "Click on cupcake 30.000 times.",
+        quote: "...",
+        iconPosition: { x: 12, y: 1 },
+        type: "hard"
+    },
+    "HyperPower": {
+    	name: "Hyper Power",
+        description: "Click on cupcake 100.000 times.",
+        quote: "Well, that's really impressive... How?..",
+        iconPosition: { x: 12, y: 2 },
+        type: "shadow",
+        revealed: false
     }
 };
-
 
 function createAchievementElement(achievementId, achievement) {
     const achievementDiv = document.createElement('div');
     achievementDiv.classList.add('achievement');
     achievementDiv.dataset.achievementId = achievementId;
 
-    const iconX = achievement.iconPosition.x;
-    const iconY = achievement.iconPosition.y;
+    let iconX = achievement.iconPosition.x;
+    let iconY = achievement.iconPosition.y;
+
+    if (achievement.type === "hard" && !achievements[achievementId]) {
+        iconX = 0;
+        iconY = 7;
+    }
 
     const iconDiv = document.createElement('div');
     iconDiv.classList.add('achievement-icon');
-    //iconDiv.style.backgroundPosition = `-${iconX}px -${iconY}px`;
-
     iconDiv.style.backgroundPosition = `-${iconX*48}px -${iconY*48}px`;
 
     const detailsDiv = document.createElement('div');
@@ -102,15 +168,43 @@ function createAchievementElement(achievementId, achievement) {
 
     const nameDiv = document.createElement('div');
     nameDiv.classList.add('achievement-name');
-    nameDiv.textContent = achievement.name;
+    
+    let nameText = achievement.name;
+    if (achievement.type === "hard" && !achievements[achievementId]) {
+        nameText = "???";
+    }
+
+    if (achievement.type === "hard") {
+        const hardPrefix = document.createElement('span');
+        hardPrefix.classList.add('hard-prefix');
+        hardPrefix.textContent = "[Hard] ";
+        nameDiv.appendChild(hardPrefix);
+    }
+    if (achievement.type === "shadow") {
+        const shadowPrefix = document.createElement('span');
+        shadowPrefix.classList.add('shadow-prefix');
+        shadowPrefix.textContent = "[Shadow] ";
+        nameDiv.appendChild(shadowPrefix);
+    }
+    nameDiv.textContent += nameText;
 
     const descriptionDiv = document.createElement('div');
     descriptionDiv.classList.add('achievement-description');
-    descriptionDiv.textContent = achievement.description;
+
+    let descriptionText = achievement.description;
+    if (achievement.type === "hard" && !achievements[achievementId]) {
+        descriptionText = "???";
+    }
+    descriptionDiv.textContent = descriptionText;
 
     const quoteQ = document.createElement('q');
     quoteQ.classList.add('achievement-quote');
-    quoteQ.textContent = achievement.quote;
+
+    let quoteText = achievement.quote;
+    if (achievement.type === "hard" && !achievements[achievementId]) {
+        quoteText = "???";
+    }
+    quoteQ.textContent = quoteText;
 
     detailsDiv.appendChild(nameDiv);
     detailsDiv.appendChild(descriptionDiv);
@@ -123,37 +217,76 @@ function createAchievementElement(achievementId, achievement) {
 }
 
 function updateAchievementDisplay() {
-    achievementsContainer.innerHTML = '';
+    normalAchievementsContainer.innerHTML = '';
+    hardAchievementsContainer.innerHTML = '';
+    shadowAchievementsContainer.innerHTML = '';
 
     for (const achievementId in achievementDefinitions) {
         const achievement = achievementDefinitions[achievementId];
+
+        if (achievement.type === "shadow" && !achievement.revealed && !achievements[achievementId]) {
+            continue;
+        }
+        
         const achievementDiv = createAchievementElement(achievementId, achievement);
 
         if (achievements[achievementId]) {
             achievementDiv.classList.add('unlocked');
         }
 
-        achievementsContainer.appendChild(achievementDiv);
+        switch (achievement.type) {
+            case "normal":
+                normalAchievementsContainer.appendChild(achievementDiv);
+                break;
+            case "hard":
+                hardAchievementsContainer.appendChild(achievementDiv);
+                break;
+            case "shadow":
+                shadowAchievementsContainer.appendChild(achievementDiv);
+                break;
+        }
     }
+}
+
+function Win(achievement) {
+	achievements[achievement] = true;
+	if (achievements[achievement].revealed == false) {
+		achievements[achievement].revealed = true;
+	}
+	saveGame();
+	showNotification("Achievement Won: " + achievements[achievement].name + "!");
 }
 
 function checkAchievements() {
     if (!achievements["firstClick"] && cupcakeCount > 0) {
-        achievements["firstClick"] = true;
-        showNotification("Получено достижение: Первый шаг!");
-        saveGame();
+        Win("firstClick");
     }
-
     if (!achievements["hundredClicks"] && cupcakeCount >= 100) {
-        achievements["hundredClicks"] = true;
-        showNotification("Получено достижение: 100 кликов!");
-        saveGame();
+        Win("hundredClicks");
     }
-
     if (!achievements["upgradeClick"] && clickValue > 1) {
-        achievements["upgradeClick"] = true;
-        showNotification("Получено достижение: Улучшение!");
-        saveGame();
+        Win("upgradeClick");
+    }
+    if (!achievements["LotsOfCupcakes"] && totalCupcakes >= 50_000) {
+        Win("LotsOfCupcakes");
+    }
+    if (!achievements["ReallyLotsOfCupcakes"] && totalCupcakes >= 500_000) {
+        Win("ReallyLotsOfCupcakes");
+    }
+    if (!achievements["Millionaire"] && totalCupcakes >= 1_000_000) {
+        Win("Millionaire");
+    }
+    if (!achievements["ClickAddict"] && totalClicks >= 10_000) {
+        Win("ClickAddict");
+    }
+    if (!achievements["Clickolympics"] && totalClicks >= 20_000) {
+        Win("Clickolympics");
+    }
+    if (!achievements["TheApotheosisOfMadness"] && totalClicks >= 30_000) {
+        Win("TheApotheosisOfMadness");
+    }
+    if (!achievements["HyperPower"] && totalClicks >= 100_000) {
+        Win("HyperPower");
     }
 }
 
@@ -167,6 +300,9 @@ function updateDisplay() {
 
 	checkAchievements();
     updateAchievementDisplay();
+
+    totalCupcakesDisplay.textContent = totalCupcakes;
+    totalClicksDisplay.textContent = totalClicks;
 }
 
 function applyBackground() {
@@ -202,6 +338,8 @@ function applyTextColor() {
 }
 
 function cupcakeClicked() {
+    totalCupcakes += clickValue;
+    totalClicks++;
 	cupcakeCount += clickValue;
 	cupcakeImg.classList.add('clicked');
 	setTimeout(() => {
@@ -243,14 +381,16 @@ function saveGame() {
         repeatY: repeatY,
         invertedText: invertedText,
         bgCover: bgCover,
-        achievements: achievements
+        achievements: achievements,
+        totalCupcakes: totalCupcakes,
+        totalClicks: totalClicks
 	}, function() {
 		showNotification('Game saved!');
 	});
 }
 
 function loadGame() {
-	chrome.storage.sync.get(['cupcakeCount', 'clickValue', 'cps', 'upgradeClickCost', 'backgroundImage', 'repeatX', 'repeatY', 'invertedText', 'bgCover', 'achievements'], function(result) {
+	chrome.storage.sync.get(['cupcakeCount', 'clickValue', 'cps', 'upgradeClickCost', 'backgroundImage', 'repeatX', 'repeatY', 'invertedText', 'bgCover', 'achievements', 'totalCupcakes', 'totalClicks'], function(result) {
 		if (result.cupcakeCount !== undefined) {
 			cupcakeCount = result.cupcakeCount;
 		}
@@ -285,6 +425,12 @@ function loadGame() {
         } else {
             achievements = {};
         }
+        if (result.totalCupcakes !== undefined) {
+            totalCupcakes = result.totalCupcakes;
+        }
+        if (result.totalClicks !== undefined) {
+            totalClicks = result.totalClicks;
+        }
         repeatXCheckbox.checked = repeatX;
         repeatYCheckbox.checked = repeatY;
         bgCoverCheckbox.checked = bgCover;
@@ -306,6 +452,8 @@ function resetGame() {
     invertedText = false;
     bgCover = false;
     achievements = {};
+    totalCupcakes = 0;
+    totalClicks = 0;
     repeatXCheckbox.checked = false;
     repeatYCheckbox.checked = false;
     bgCoverCheckbox.checked = false;
