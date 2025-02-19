@@ -20,7 +20,7 @@
 			<button id="resetGame">Reset</button>
 		</div>
 	</div>
-	<div id="version">v1.1</div>
+	<div id="version">v1.2</div>
 
 	<div id="overlay"></div>
 
@@ -48,6 +48,13 @@
             <button id="toggle-text-color">Change Text Color (Black/White)</button>
 		</div>
 
+		<div class="settings-section">
+			<hr class="settings-divider">
+			<h3>Stats</h3>
+            <p>cupcakes baked all-time: <span id="total-cupcakes">0</span></p>
+            <p>cupcake clicks: <span id="total-clicks">0</span></p>
+		</div>
+
 		<hr class="settings-divider">
 
 		<p class="credits">Game made by GDCocos12</p>
@@ -57,6 +64,16 @@
 		<div id="changelog-close">X</div>
 
 		<h2>Updates</h2>
+
+		<div class="changelog-section">
+			<hr class="settings-divider">
+			<h3>v1.2</h3>
+			<ul>
+				<li>Added new statistics.</li>
+				<li>Added new achievements.</li>
+				<li>Added new achievement types.</li>
+			</ul>
+		</div>
 
 		<div class="changelog-section">
 			<hr class="settings-divider">
@@ -86,7 +103,18 @@
         <div id="achievements-close">X</div>
         <h2>Achievements</h2>
         <hr class="settings-divider">
-        <div id="achievements-container"></div>
+
+        <div id="achievements-container">
+        	<h3>Regular</h3>
+	        <div id="normal-achievements"></div>
+
+	        <h3>Hard</h3>
+	        <div id="hard-achievements"></div>
+
+	        <h3>Shadow</h3>
+	        <div id="shadow-achievements"></div>
+	    </div>
+
         <hr class="settings-divider">
         <p class="credits">Game made by GDCocos12</p>
     </div>
