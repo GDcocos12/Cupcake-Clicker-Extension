@@ -266,3 +266,15 @@ body.inverted {
     font-size: 0.8em;
     color: rgba(255, 255, 255, 0.3);
 }
+
+.hard-prefix {
+    color: red;
+    font-size: 0.4em;
+    margin-right: 3px;
+}
+
+.shadow-prefix {
+    color: darkviolet;
+    font-size: 0.4em;
+    margin-right: 3px;
+}
