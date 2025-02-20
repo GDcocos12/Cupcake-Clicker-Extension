@@ -1,6 +1,6 @@
 function l(what) { return document.getElementById(what); }
 
-const version = "v1.2";
+const version = "v1.3";
 let cupcakeCount = 0;
 let clickValue = 1;
 let cps = 0;
@@ -21,6 +21,9 @@ let achievements = {};
 //stats
 let totalCupcakes = 0;
 let totalClicks = 0;
+
+//player name
+let playerName = '';
 
 //main elements
 const cupcakeImg = l('cupcake');
@@ -58,18 +61,92 @@ const achievementsContainer = l('achievements-container');
 const achievementsCloseButton = l('achievements-close');
 const achievementsPanel = l('achievements-panel');
 const achievementsButton = l('achievements-button');
-const normalAchievementsContainer = document.getElementById('normal-achievements');
-const hardAchievementsContainer = document.getElementById('hard-achievements');
-const shadowAchievementsContainer = document.getElementById('shadow-achievements');
+const normalAchievementsContainer = l('normal-achievements');
+const hardAchievementsContainer = l('hard-achievements');
+const shadowAchievementsContainer = l('shadow-achievements');
 
 //stats
 const totalCupcakesDisplay = l('total-cupcakes');
 const totalClicksDisplay = l('total-clicks');
 
+//player name
+const playerNameContainer = l('playerNameContainer');
+const playerNameDisplay = l('playerName');
+
 
 if (!l('notification-container')) {
 	notificationContainer.id = 'notification-container';
 	document.body.appendChild(notificationContainer);
+}
+
+//player name functions
+function generateRandomName() {
+    const names = ["Cupcake", "Sweet Tooth", "Baker13", "Leinad", "Daniel_L", "Jonathan", "VAX325"];
+    return names[Math.floor(Math.random() * names.length)];
+}
+
+function createCustomPrompt(title, subtitle, placeholder, callback) {
+    const overlay = document.createElement('div');
+    overlay.classList.add('custom-prompt-overlay');
+    document.body.appendChild(overlay);
+
+    const prompt = document.createElement('div');
+    prompt.classList.add('custom-prompt');
+    overlay.appendChild(prompt);
+
+    const titleElement = document.createElement('h2');
+    titleElement.textContent = title;
+    prompt.appendChild(titleElement);
+
+    const subtitleElement = document.createElement('p');
+    subtitleElement.textContent = subtitle;
+    prompt.appendChild(subtitleElement);
+
+    const inputElement = document.createElement('input');
+    inputElement.type = 'text';
+    inputElement.placeholder = placeholder;
+    prompt.appendChild(inputElement);
+
+    const buttonsElement = document.createElement('div');
+    buttonsElement.classList.add('custom-prompt-buttons');
+    prompt.appendChild(buttonsElement);
+
+    const okButton = document.createElement('button');
+    okButton.classList.add('custom-prompt-button');
+    okButton.textContent = 'OK';
+    buttonsElement.appendChild(okButton);
+
+    const cancelButton = document.createElement('button');
+    cancelButton.classList.add('custom-prompt-button');
+    cancelButton.textContent = 'Отмена';
+    buttonsElement.appendChild(cancelButton);
+
+    function closePrompt(value) {
+        prompt.classList.remove('active');
+        overlay.classList.remove('active');
+
+        setTimeout(() => {
+            overlay.remove();
+            if (callback) {
+                callback(value);
+            }
+        }, 200);
+    }
+
+    okButton.addEventListener('click', () => {
+        closePrompt(inputElement.value);
+    });
+
+    cancelButton.addEventListener('click', () => {
+        closePrompt(null);
+    });
+
+    overlay.classList.add('active');
+    setTimeout(() => {
+        prompt.classList.add('active');
+    }, 10);
+
+    return inputElement;
 }
 
 const achievementDefinitions = {
@@ -303,6 +380,8 @@ function updateDisplay() {
 
     totalCupcakesDisplay.textContent = totalCupcakes;
     totalClicksDisplay.textContent = totalClicks;
+
+    playerNameDisplay.textContent = playerName;
 }
 
 function applyBackground() {
@@ -383,14 +462,15 @@ function saveGame() {
         bgCover: bgCover,
         achievements: achievements,
         totalCupcakes: totalCupcakes,
-        totalClicks: totalClicks
+        totalClicks: totalClicks,
+        playerName: playerName
 	}, function() {
 		showNotification('Game saved!');
 	});
 }
 
 function loadGame() {
-	chrome.storage.sync.get(['cupcakeCount', 'clickValue', 'cps', 'upgradeClickCost', 'backgroundImage', 'repeatX', 'repeatY', 'invertedText', 'bgCover', 'achievements', 'totalCupcakes', 'totalClicks'], function(result) {
+	chrome.storage.sync.get(['cupcakeCount', 'clickValue', 'cps', 'upgradeClickCost', 'backgroundImage', 'repeatX', 'repeatY', 'invertedText', 'bgCover', 'achievements', 'totalCupcakes', 'totalClicks', 'playerName'], function(result) {
 		if (result.cupcakeCount !== undefined) {
 			cupcakeCount = result.cupcakeCount;
 		}
@@ -431,6 +511,9 @@ function loadGame() {
         if (result.totalClicks !== undefined) {
             totalClicks = result.totalClicks;
         }
+
+        playerName = result.playerName || generateRandomName();
+
         repeatXCheckbox.checked = repeatX;
         repeatYCheckbox.checked = repeatY;
         bgCoverCheckbox.checked = bgCover;
@@ -549,6 +632,23 @@ achievementsButton.addEventListener('click', () => {
 achievementsCloseButton.addEventListener('click', () => {
     overlay.style.display = 'none';
     achievementsPanel.style.display = 'none';
+});
+
+//player name click
+playerNameContainer.addEventListener('click', () => {
+    createCustomPrompt(
+        'Change Name',
+        'Enter new name:',
+        'New Name',
+        (value) => {
+            if (value) {
+                playerName = value;
+                updateDisplay();
+                saveGame();
+                showNotification(`Name changed to ${playerName}!`);
+            }
+        }
+    );
 });
 
 document.addEventListener('DOMContentLoaded', () => {
