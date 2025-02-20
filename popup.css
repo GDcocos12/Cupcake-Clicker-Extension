@@ -278,3 +278,96 @@ body.inverted {
     font-size: 0.4em;
     margin-right: 3px;
 }
+
+.custom-prompt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-prompt-overlay.active {
+    display: flex;
+}
+
+.custom-prompt {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 80%;
+    max-width: 400px;
+    transform: scale(0);
+    transition: transform 0.2s ease-in-out;
+}
+
+.custom-prompt.active {
+    transform: scale(1);
+}
+
+.custom-prompt h2 {
+    margin-bottom: 5px;
+}
+
+.custom-prompt p {
+    margin-bottom: 15px;
+    font-size: 0.9em;
+}
+
+.custom-prompt input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #444;
+    color: white;
+}
+
+.custom-prompt input[type="text"]::placeholder {
+    color: #888;
+}
+
+.custom-prompt-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.custom-prompt-button {
+    padding: 8px 15px;
+    border: 2px solid white;
+    border-radius: 2px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.custom-prompt-button:hover {
+    background-color: #444;
+}
+
+.custom-prompt-button:active {
+    background-color: #888;
+}
+
+#playerNameContainer {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: white;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+#playerNameContainer:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
